@@ -25,21 +25,25 @@ Terima kasih atas kesabarannya.
 `;
 
 // ⏰ Maintenance mulai
-cron.schedule('0 00 * * *', async () => {
-  await bot.telegram.sendPhoto(channelId, imageUrl, {
-    caption: maintenanceStartMessage
-  });
+cron.schedule('0 23 * * *', async () => {
+  try {
+    await bot.telegram.sendPhoto(channelId, imageUrl, {
+      caption: maintenanceStartMessage
+    });
+    console.log('Maintenance mulai terkirim');
+  } catch (e) {
+    console.error('Error maintenance mulai:', e.message);
+  }
 }, { timezone: 'Asia/Jakarta' });
 
 // ⏰ Maintenance selesai
 cron.schedule('15 0 * * *', async () => {
-  await bot.telegram.sendMessage(channelId, maintenanceEndMessage);
+  try {
+    await bot.telegram.sendMessage(channelId, maintenanceEndMessage);
+    console.log('Maintenance selesai terkirim');
+  } catch (e) {
+    console.error('Error maintenance selesai:', e.message);
+  }
 }, { timezone: 'Asia/Jakarta' });
 
-// 🔥 WAJIB: matikan webhook & polling
-bot.telegram.deleteWebhook();
-
-// 🔥 Launch TANPA polling
-bot.launch({ polling: false });
-
-console.log('Bot broadcast maintenance siap.');
+console.log('Bot broadcast maintenance siap (tanpa polling).');
