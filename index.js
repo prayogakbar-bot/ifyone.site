@@ -4,33 +4,61 @@ const cron = require('node-cron');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// Ganti dengan username channel atau chat ID channel
-const channelId = "-1002936402906"; // 
-// Pesan broadcast maintenance
-const maintenanceMessage = `
+const channelId = "-1002936402906";
+
+// Gambar maintenance (GitHub RAW)
+const imageUrl = "https://raw.githubusercontent.com/prayogakbar-bot/ifyone.site/cd94990429c9bc215f38dff4ebf9b07b07c1d938/images/Maintenence.jpg";
+
+// Pesan MAINTENANCE MULAI
+const maintenanceStartMessage = `
 Dear Mitra IFYOne,
-Kami informasikan bahwa sistem akan memasuki waktu maintenance dan cutoff pada:
+Sistem akan melakukan maintenance harian pada 23:30 – 00:15 WIB.
+Selama periode tersebut, layanan tidak dapat diproses.
 
-23:30 – 00:15 WIB
-Selama periode tersebut, beberapa layanan mungkin tidak dapat diakses atau mengalami keterlambatan proses.
-
-Layanan akan kembali normal setelah maintenance selesai.
 Terima kasih atas pengertiannya.
 `;
 
-// Broadcast ke channel setiap hari jam 23:00 WIB
+// Pesan MAINTENANCE SELESAI
+const maintenanceEndMessage = `
+Dear Mitra IFYOne,
+Maintenance telah selesai.
+Seluruh layanan telah kembali normal dan dapat digunakan seperti biasa.
+
+Terima kasih atas kesabarannya.
+`;
+
+// ⏰ Broadcast MAINTENANCE MULAI (23:00 WIB)
 cron.schedule('0 23 * * *', async () => {
   try {
-    await bot.telegram.sendMessage(channelId, maintenanceMessage);
-    console.log('Pesan maintenance berhasil dikirim ke channel.');
+    await bot.telegram.sendPhoto(
+      channelId,
+      imageUrl,
+      { caption: maintenanceStartMessage }
+    );
+    console.log('Broadcast maintenance mulai berhasil.');
   } catch (err) {
-    console.error('Gagal mengirim pesan ke channel:', err.message);
+    console.error('Gagal kirim maintenance mulai:', err.message);
   }
 }, {
   scheduled: true,
   timezone: "Asia/Jakarta"
 });
 
-// Jalankan bot
+// ⏰ Broadcast MAINTENANCE SELESAI (00:15 WIB)
+cron.schedule('15 0 * * *', async () => {
+  try {
+    await bot.telegram.sendMessage(
+      channelId,
+      maintenanceEndMessage
+    );
+    console.log('Broadcast maintenance selesai berhasil.');
+  } catch (err) {
+    console.error('Gagal kirim maintenance selesai:', err.message);
+  }
+}, {
+  scheduled: true,
+  timezone: "Asia/Jakarta"
+});
+
 bot.launch();
-console.log('Bot broadcast ke channel siap.');
+console.log('Bot broadcast maintenance siap.');
