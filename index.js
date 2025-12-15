@@ -25,7 +25,7 @@ Terima kasih atas kesabarannya.
 `;
 
 // ⏰ Maintenance mulai
-cron.schedule('0 23 * * *', async () => {
+cron.schedule('0 00 * * *', async () => {
   await bot.telegram.sendPhoto(channelId, imageUrl, {
     caption: maintenanceStartMessage
   });
